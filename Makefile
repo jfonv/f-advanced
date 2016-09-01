@@ -19,3 +19,5 @@ watch: all
 	@$(BIN)/chokidar 'client/**/*.js' -c 'make all'
 
 all: main compile-front lint
+
+	
