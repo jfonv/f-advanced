@@ -26,6 +26,7 @@ export default () => (
           <li><Link to="/login"><i className="fa fa-key fa-lock" /> Login</Link></li>
           <li><Link to="/logout"><i className="fa fa-key fa-unlock" /> Logout</Link></li>
           <li><Link to="/profile"><i className="fa fa-key fa-heartbeat" /> Profile</Link></li>
+          <li><Link to="/admin"><i className="fa fa-key fa-heartbeat" /> Admin</Link></li>
         </ul>
       </div>
     </div>

@@ -1,5 +1,7 @@
 /* eslint-disable max-len, arrow-body-style, no-underscore-dangle, react/no-string-refs, react/self-closing-comp */
+/* eslint-disable func-names, prefer-arrow-callback, no-undef, prefer-const, eqeqeq */
 /* global localStorage */
+
 
 import React from 'react';
 import axios from 'axios';
@@ -9,6 +11,7 @@ export default class Login extends React.Component {
   constructor(props) {
     super(props);
     this.create = this.create.bind(this);
+    this.state = { unauthorized: false, lockedOut: false };
   }
 
   create(e) {
@@ -19,14 +22,38 @@ export default class Login extends React.Component {
     .then((res) => {
       localStorage.clear();
       localStorage.setItem('token', res.headers.authorization);
-      browserHistory.push('/');
+      browserHistory.push('/admin');
     })
-    .catch(() => {
-      // notify user login failed
+    .catch((error) => {
+      console.log(error.response);
+      if (error.response.data.message == 'Authentication Failed: Account Locked & GFY') {
+        this.setState({ unauthorized: false, lockedOut: true });
+        console.log('tricks');
+      } else if (error.response.data.message == 'Authentication Failed: Bad credentials') {
+        this.setState({ unauthorized: true, lockedOut: false });
+        console.log('are somethign a whore does for money');
+      }
     });
   }
 
   render() {
+    let unauth = '';
+    if (this.state.unauthorized) {
+      unauth =
+        (<div ref="unauthorized" id="unauthorized" style={{ color: 'red' }}>
+          Sorry, this username or password is incorrect.
+          Or GFY.
+        </div>);
+    }
+
+    let lockedOut = '';
+    if (this.state.lockedOut) {
+      lockedOut =
+        (<div ref="lockedOut" id="lockedOut" style={{ color: 'red' }}>
+          Sorry, this account is locked out.
+          Or you cant type.
+        </div>);
+    }
     return (
       <div>
 
@@ -35,6 +62,8 @@ export default class Login extends React.Component {
         <div className="row">
           <div className="col-xs-3">
             <form>
+              {unauth}
+              {lockedOut}
               <div className="form-group">
                 <label htmlFor="username">Username</label>
                 <input ref="username" type="text" className="form-control" id="username" />
